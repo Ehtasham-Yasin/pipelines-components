@@ -103,6 +103,19 @@ class TestScanRepo:
             assert results["stale"][0]["last_verified"] == "unknown"
             assert results["stale"][0]["age_days"] == 0
 
+    def test_handles_empty_metadata(self):
+        """Test handles empty metadata files."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            comp_dir = tmp / "components" / "test_category" / "empty"
+            comp_dir.mkdir(parents=True)
+            (comp_dir / "metadata.yaml").touch()
+
+            results = scan_repo(tmp)
+            assert results["stale"][0]["name"] == "unknown"
+            assert results["stale"][0]["last_verified"] == "unknown"
+            assert results["stale"][0]["age_days"] == 0
+
     def test_scans_pipelines_directory(self):
         """Test script scans pipelines directory"""
         with tempfile.TemporaryDirectory() as tmpdir:
